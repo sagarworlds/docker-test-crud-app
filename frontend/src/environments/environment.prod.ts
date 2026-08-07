@@ -2,5 +2,5 @@
 // and get your API URL (e.g. https://crud-api-xxxx.onrender.com)
 export const environment = {
   production: true,
-  apiUrl: 'https://YOUR-API-NAME.onrender.com'
+  apiUrl: 'https://crud-api-i9al.onrender.com'
 };
