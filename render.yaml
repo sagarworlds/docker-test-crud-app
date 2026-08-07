@@ -33,6 +33,9 @@ services:
     runtime: static
     buildCommand: cd frontend && npm ci --legacy-peer-deps && npm run build
     staticPublishPath: ./frontend/dist/crud-frontend/browser
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.3
     routes:
       - type: rewrite
         source: /*
