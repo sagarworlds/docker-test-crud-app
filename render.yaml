@@ -33,7 +33,7 @@ services:
     runtime: static
     plan: free
     buildCommand: cd frontend && npm ci --legacy-peer-deps && npm run build
-    publishPath: frontend/dist/crud-frontend/browser
+    staticPublishPath: ./frontend/dist/crud-frontend/browser
     routes:
       - type: rewrite
         source: /*
