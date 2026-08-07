@@ -1,0 +1,193 @@
+<div class="page-wrapper">
+
+  <!-- ── Page Header ──────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Products</h1>
+      <p class="page-subtitle">Manage your product catalog</p>
+    </div>
+    <a routerLink="/products/new" id="add-product-btn" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5"  y1="12" x2="19" y2="12"/>
+      </svg>
+      Add Product
+    </a>
+  </div>
+
+  <!-- ── Toolbar ───────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="search-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        id="product-search"
+        type="text"
+        class="search-input"
+        placeholder="Search by name, category or description…"
+        [value]="searchQuery()"
+        (input)="onSearchChange($event)"
+      />
+      @if (searchQuery()) {
+        <button class="clear-btn" (click)="clearSearch()" aria-label="Clear search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" width="13" height="13">
+            <line x1="18" y1="6"  x2="6"  y2="18"/>
+            <line x1="6"  y1="6"  x2="18" y2="18"/>
+          </svg>
+        </button>
+      }
+    </div>
+
+    @if (!loading()) {
+      <span class="count-badge">
+        {{ filteredProducts().length }}
+        product{{ filteredProducts().length !== 1 ? 's' : '' }}
+      </span>
+    }
+  </div>
+
+  <!-- ── Error alert ───────────────────────────────────────── -->
+  @if (error()) {
+    <div class="alert-error" role="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" width="18" height="18">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8"  x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>{{ error() }}</span>
+      <button class="btn btn-sm btn-secondary" (click)="loadProducts()">Retry</button>
+    </div>
+  }
+
+  <!-- ── Loading ───────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading products…</p>
+    </div>
+  }
+
+  <!-- ── Empty state ───────────────────────────────────────── -->
+  @if (!loading() && !error() && filteredProducts().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" width="44" height="44">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+      </div>
+
+      @if (searchQuery()) {
+        <h3>No results for "{{ searchQuery() }}"</h3>
+        <p>Try a different search term or clear your search</p>
+        <button class="btn btn-secondary" (click)="clearSearch()">Clear search</button>
+      } @else {
+        <h3>No products yet</h3>
+        <p>Get started by adding your first product to the catalog</p>
+        <a routerLink="/products/new" class="btn btn-primary">Add your first product</a>
+      }
+    </div>
+  }
+
+  <!-- ── Products table ────────────────────────────────────── -->
+  @if (!loading() && filteredProducts().length > 0) {
+    <div class="table-card">
+      <div class="table-scroll">
+        <table class="products-table" aria-label="Products table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Category</th>
+              <th scope="col">Description</th>
+              <th scope="col">Price</th>
+              <th scope="col">Created</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of filteredProducts(); track product.id) {
+              <tr class="product-row">
+
+                <td>
+                  <div class="product-name">{{ product.name }}</div>
+                  <div class="product-id">#{{ product.id }}</div>
+                </td>
+
+                <td>
+                  @if (product.category) {
+                    <span class="category-badge">{{ product.category }}</span>
+                  } @else {
+                    <span class="no-value">—</span>
+                  }
+                </td>
+
+                <td>
+                  <div class="description-text">{{ product.description || '—' }}</div>
+                </td>
+
+                <td>
+                  <span class="price-value">{{ product.price | currency }}</span>
+                </td>
+
+                <td>
+                  <span class="date-value">{{ product.createdAt | date : 'mediumDate' }}</span>
+                </td>
+
+                <td>
+                  <div class="action-buttons">
+                    <a
+                      [routerLink]="['/products/edit', product.id]"
+                      class="btn btn-secondary btn-sm"
+                      [id]="'edit-' + product.id"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" stroke-width="2" width="13" height="13">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                      Edit
+                    </a>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      [id]="'delete-' + product.id"
+                      (click)="confirmDelete(product)"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" stroke-width="2" width="13" height="13">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14H6L5 6"/>
+                        <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+</div>
+
+<!-- ── Confirm delete dialog ──────────────────────────────── -->
+@if (showConfirm()) {
+  <app-confirm-dialog
+    [title]="'Delete Product'"
+    [message]="deleteMessage()"
+    [confirmLabel]="'Delete'"
+    (confirmed)="onConfirmDelete()"
+    (cancelled)="onCancelDelete()"
+  />
+}

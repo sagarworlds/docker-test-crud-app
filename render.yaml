@@ -1,0 +1,45 @@
+# Render.com Infrastructure as Code
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Services:
+#   1. crud-db       — PostgreSQL (FREE, managed by Render)
+#   2. crud-api      — .NET 10 Web API (Docker, Web Service)
+#   3. crud-frontend — Angular 22 (Static Site, FREE)
+
+databases:
+  - name: crud-db
+    databaseName: CrudAppDb
+    plan: free          # Render free PostgreSQL (90-day, then $7/mo)
+
+services:
+
+  # ── .NET 10 Web API ─────────────────────────────────────────
+  - type: web
+    name: crud-api
+    runtime: docker
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: ./api
+    envVars:
+      # Render injects PORT=10000; tell ASP.NET Core to use it
+      - key: ASPNETCORE_HTTP_PORTS
+        value: 10000
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      # Auto-injected from the crud-db database above (Npgsql key=value format)
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: crud-db
+          property: connectionString
+    healthCheckPath: /openapi/v1.json
+
+  # ── Angular 22 Frontend (Static Site — permanently FREE) ────
+  - type: web
+    name: crud-frontend
+    runtime: static
+    buildCommand: cd frontend && npm ci --legacy-peer-deps && npm run build
+    staticPublishPath: frontend/dist/crud-frontend/browser
+    routes:
+      # Angular SPA — all routes rewrite to index.html
+      - type: rewrite
+        source: /*
+        destination: /index.html

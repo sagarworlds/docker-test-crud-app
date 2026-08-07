@@ -1,0 +1,115 @@
+.page-wrapper { animation: fadeInUp 0.4s ease both; }
+
+/* ── Breadcrumb ───────────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.breadcrumb-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.breadcrumb-link:hover { color: var(--accent-primary); }
+
+.breadcrumb-sep     { color: var(--text-muted); font-size: 14px; }
+.breadcrumb-current { color: var(--text-primary); font-size: 14px; font-weight: 500; }
+
+/* ── Header ───────────────────────────────────── */
+.page-header { margin-bottom: 28px; }
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+.page-subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+/* ── Form Card ────────────────────────────────── */
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 640px;
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.4s ease both;
+}
+
+/* ── Two-column row ───────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Price prefix ─────────────────────────────── */
+.input-prefix-wrapper { position: relative; }
+
+.input-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-control.with-prefix { padding-left: 28px; }
+
+/* Textarea */
+.form-control.textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+/* ── Actions ──────────────────────────────────── */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ── Skeleton ─────────────────────────────────── */
+.skeleton-card { pointer-events: none; }
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 25%,
+    rgba(255,255,255,.07) 50%,
+    var(--bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-title { height: 18px; width: 35%; }
+.skeleton-field { height: 46px; }
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 520px) {
+  .form-row { grid-template-columns: 1fr; }
+  .form-card { padding: 20px; }
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .form-actions .btn { width: 100%; justify-content: center; }
+}

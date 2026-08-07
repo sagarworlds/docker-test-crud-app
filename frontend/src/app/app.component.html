@@ -1,0 +1,48 @@
+<div class="app-shell">
+
+  <!-- ── Header ──────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-content">
+
+      <a routerLink="/products" class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </div>
+        <span class="logo-text">CrudApp</span>
+      </a>
+
+      <nav class="app-nav">
+        <a routerLink="/products" routerLinkActive="active" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" width="15" height="15">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          Products
+        </a>
+      </nav>
+
+      <div class="tech-stack">
+        <span class="tech-badge">.NET 10</span>
+        <span class="tech-badge">Angular 22</span>
+        <span class="tech-badge">Docker</span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ── Main content ─────────────────────────────────── -->
+  <main class="main-content">
+    <router-outlet />
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────── -->
+  <footer class="app-footer">
+    <p>Built with <span class="heart">♥</span> using .NET 10 &middot; Angular 22 &middot; SQL Server &middot; Docker</p>
+  </footer>
+
+</div>
