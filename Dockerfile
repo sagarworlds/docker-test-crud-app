@@ -2,11 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY CrudApp.Api.csproj ./
-RUN dotnet restore CrudApp.Api.csproj
+# Copy project file from api directory
+COPY api/*.csproj ./api/
+RUN dotnet restore api/CrudApp.Api.csproj
 
-COPY . .
-RUN dotnet publish CrudApp.Api.csproj -c Release -o /app/publish
+# Copy source code and build
+COPY api/ ./api/
+RUN dotnet publish api/CrudApp.Api.csproj -c Release -o /app/publish
 
 # ── Runtime Stage ───────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime

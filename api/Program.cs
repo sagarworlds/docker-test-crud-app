@@ -5,9 +5,9 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Database (PostgreSQL via Npgsql) ─────────────────────────
-// Supports both key=value format (local) and postgresql:// URL (Render)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// ── Database Connection String Parser ─────────────────────────
+var rawConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString    = FormatConnectionString(rawConnectionString);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -35,7 +35,7 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        logger.LogInformation("Initialising database...");
+        logger.LogInformation("Initialising database and ensuring schema exists...");
         db.Database.EnsureCreated();
 
         if (!db.Products.Any())
@@ -48,15 +48,15 @@ using (var scope = app.Services.CreateScope())
                 new Product { Name = "USB-C Hub 7-in-1",       Description = "HDMI, USB-A × 3, SD, microSD, 100W PD pass-through", Price =   79.99m, Category = "Accessories" }
             );
             db.SaveChanges();
-            logger.LogInformation("Database seeded with sample products.");
+            logger.LogInformation("Database seeded with sample products successfully.");
         }
 
-        logger.LogInformation("Database ready.");
+        logger.LogInformation("Database is ready and healthy.");
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "Database initialisation failed.");
-        throw;
+        // Non-fatal logging so app can start even if DB takes a few seconds on cloud restart
     }
 }
 
@@ -73,3 +73,26 @@ app.MapScalarApiReference(options =>
 app.MapControllers();
 
 app.Run();
+
+// ── Helper: Converts postgres:// or postgresql:// URLs into Npgsql connection strings ──
+static string FormatConnectionString(string? connStr)
+{
+    if (string.IsNullOrWhiteSpace(connStr))
+        return string.Empty;
+
+    if (connStr.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) ||
+        connStr.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
+    {
+        var uri      = new Uri(connStr);
+        var userInfo = uri.UserInfo.Split(':');
+        var username = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "";
+        var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+        var host     = uri.Host;
+        var port     = uri.Port > 0 ? uri.Port : 5432;
+        var database = uri.AbsolutePath.TrimStart('/');
+
+        return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true;";
+    }
+
+    return connStr;
+}
