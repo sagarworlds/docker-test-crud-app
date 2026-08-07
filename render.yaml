@@ -14,8 +14,8 @@ services:
     name: crud-api
     runtime: docker
     plan: free
-    dockerfilePath: ./api/Dockerfile
-    dockerContext: ./api
+    rootDir: api
+    dockerfilePath: Dockerfile
     envVars:
       - key: ASPNETCORE_HTTP_PORTS
         value: 10000
