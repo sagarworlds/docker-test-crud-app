@@ -4,7 +4,7 @@
 databases:
   # ── Free managed PostgreSQL ──────────────────────────────────
   - name: crud-db
-    databaseName: CrudAppDb
+    databaseName: crudappdb
     plan: free
 
 services:
