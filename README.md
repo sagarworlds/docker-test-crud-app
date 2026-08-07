@@ -277,7 +277,10 @@ git push -u origin main
 
 1. Go to [render.com](https://render.com) → **New → Blueprint**
 2. Connect your GitHub repo
-3. Render detects `render.yaml` and shows a preview of all 3 services
+3. Render detects `render.yaml` and shows a preview of all 3 services:
+   - `crud-db` — PostgreSQL (free)
+   - `crud-api` — Web Service (Docker)
+   - `crud-frontend` — Static Site (free)
 4. Click **Apply** — done!
 
 > The database connection string is **auto-injected** into the API. No manual copy-paste.
