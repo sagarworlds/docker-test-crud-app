@@ -12,6 +12,9 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
+# Disable inotify file reload watcher to prevent cloud container crash (inotify instance limit)
+ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
+
 COPY --from=build /app/publish .
 
 EXPOSE 8080

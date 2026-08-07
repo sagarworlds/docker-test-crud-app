@@ -21,6 +21,9 @@ services:
         value: 10000
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
+      # Disable inotify file reloading in cloud container environment
+      - key: DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE
+        value: "false"
       # Automatically injected from the crud-db database above
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
