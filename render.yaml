@@ -28,10 +28,8 @@ services:
     healthCheckPath: /openapi/v1.json
 
   # ── Angular 22 Frontend (Static Site — free forever) ─────────
-  - type: web
+  - type: static
     name: crud-frontend
-    runtime: static
-    plan: free
     buildCommand: cd frontend && npm ci --legacy-peer-deps && npm run build
     staticPublishPath: ./frontend/dist/crud-frontend/browser
     routes:
